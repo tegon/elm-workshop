@@ -2,7 +2,7 @@ module Main exposing (..)
 
 import Auth
 import Html exposing (..)
-import Html.Attributes exposing (class, target, href, property, defaultValue)
+import Html.Attributes exposing (class, defaultValue, href, property, target)
 import Html.Events exposing (..)
 import Http
 import Json.Decode exposing (Decoder)
@@ -29,15 +29,10 @@ searchFeed query =
                 ++ query
                 ++ "+language:elm&sort=stars&order=desc"
 
-        -- HINT: responseDecoder may be useful here.
         request =
-            "TODO replace this String with a Request built using http://package.elm-lang.org/packages/elm-lang/http/latest/Http#get"
+            Http.get url responseDecoder
     in
-        -- TODO replace this Cmd.none with a call to Http.send
-        -- http://package.elm-lang.org/packages/elm-lang/http/latest/Http#send
-        --
-        -- HINT: request and HandleSearchResponse may be useful here.
-        Cmd.none
+    Http.send HandleSearchResponse request
 
 
 responseDecoder : Decoder (List SearchResult)
@@ -139,7 +134,7 @@ update msg model =
                     --
                     -- Hint 3: to check if this is working, break responseDecoder
                     -- by changing "stargazers_count" to "description"
-                    ( model, Cmd.none )
+                    ( { model | errorMessage = Just (toString error) }, Cmd.none )
 
         SetQuery query ->
             ( { model | query = query }, Cmd.none )
@@ -153,4 +148,4 @@ update msg model =
                 newModel =
                     { model | results = newResults }
             in
-                ( newModel, Cmd.none )
+            ( newModel, Cmd.none )
